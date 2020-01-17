@@ -8,12 +8,12 @@ import * as random from "@pulumi/random";
 const dataBucket = new aws.s3.Bucket("dummydata-bucket", {});
 
 // Construct a VPC
-const vpc = new awsx.ec2.Vpc("vpc", {
+const vpc = new awsx.ec2.Vpc("dummydata_vpc", {
     cidrBlock: "10.0.0.0/16",
 });
 
 // Create an Aurora Serverless MySQL database
-const auroraSubnet = new aws.rds.SubnetGroup("dbsubnet", {
+const auroraSubnet = new aws.rds.SubnetGroup("dummydata_db_subnet", {
     subnetIds: vpc.privateSubnetIds,
 });
 
@@ -21,7 +21,7 @@ const auroraMasterPassword = new random.RandomString("password", {
     length: 20,
 });
 
-const auroraCluster = new aws.rds.Cluster("db", {
+const auroraCluster = new aws.rds.Cluster("dummydata_db", {
     engine: "aurora",
     engineMode: "serverless",
     engineVersion: "5.6.10a",
@@ -78,7 +78,7 @@ function initDatabase(): Promise<any> {
 
 
 // Create a Lambda within the VPC to access the Aurora DB and run the code above.
-const lambda = new aws.lambda.CallbackFunction("lambda", {
+const lambda = new aws.lambda.CallbackFunction("dummydata_db_init_fn", {
     vpcConfig: {
         securityGroupIds: auroraCluster.vpcSecurityGroupIds,
         subnetIds: vpc.privateSubnetIds,
