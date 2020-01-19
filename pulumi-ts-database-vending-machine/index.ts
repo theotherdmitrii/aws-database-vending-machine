@@ -5,17 +5,17 @@ import * as random from "@pulumi/random";
 import {initDatabase} from "./src/database"
 
 // Create a bucket and expose a website index document
-const dataBucket = new aws.s3.Bucket("dummydata-bucket", {});
+const dataBucket = new aws.s3.Bucket("nuage_bucket", {});
 
 // Construct a VPC
-const vpc = new awsx.ec2.Vpc("dummydata_vpc", {
+const vpc = new awsx.ec2.Vpc("nuage_vpc", {
     cidrBlock: "10.0.0.0/16",
 });
 
 const auroraSubnets = vpc.privateSubnetIds;
 
 // Create an Aurora Serverless MySQL database
-const auroraSubnet = new aws.rds.SubnetGroup("dummydata_db_subnet", {
+const auroraSubnet = new aws.rds.SubnetGroup("nuagedb_subnet", {
     subnetIds: auroraSubnets,
 });
 
@@ -23,7 +23,7 @@ const auroraMasterPassword = new random.RandomString("password", {
     length: 20,
 });
 
-const auroraCluster = new aws.rds.Cluster("dummydata_db", {
+const auroraCluster = new aws.rds.Cluster("nuage_db", {
     engine: "aurora",
     engineMode: "serverless",
     engineVersion: "5.6.10a",
@@ -39,7 +39,7 @@ const auroraCluster = new aws.rds.Cluster("dummydata_db", {
 });
 
 // Create a Lambda within the VPC to access the Aurora DB and run the code above.
-const lambda = new aws.lambda.CallbackFunction("dummydata_db_init_fn", {
+const databaseInitFun = new aws.lambda.CallbackFunction("nuage_db_init_fn", {
     vpcConfig: {
         securityGroupIds: auroraCluster.vpcSecurityGroupIds,
         subnetIds: auroraSubnets,
@@ -66,4 +66,4 @@ const lambda = new aws.lambda.CallbackFunction("dummydata_db_init_fn", {
     },
 });
 
-export const functionArn = lambda.arn;
+export const functionArn = databaseInitFun.arn;

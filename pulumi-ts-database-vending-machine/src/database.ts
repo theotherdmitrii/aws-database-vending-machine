@@ -9,7 +9,7 @@ interface QueryParams {
 const defaultQueryParams: QueryParams = {
     masterUsername: "",
     masterPassword: "",
-    databaseName: "dummydata",
+    databaseName: "nuage",
     tableName: "dummydata",
     importDataPath: ""
 };

@@ -1,0 +1,3 @@
+name: pulumi-ts-dms-s3-to-aurora
+runtime: nodejs
+description: A minimal TypeScript Pulumi program
