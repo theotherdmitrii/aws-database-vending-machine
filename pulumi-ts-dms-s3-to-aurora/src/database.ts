@@ -8,7 +8,7 @@ export const auroraPassword = "password";
 export const auroraDatabase = "dummydata";
 
 // Create an Aurora Serverless MySQL database
-const auroraSubnet = new aws.rds.SubnetGroup("nuage_db_subnet", {
+const auroraSubnetGroup = new aws.rds.SubnetGroup("nuage_db_subnet", {
     subnetIds: auroraSubnets,
 });
 
@@ -16,7 +16,7 @@ export const auroraCluster = new aws.rds.Cluster("nuage_db", {
     engine: "aurora",
     engineMode: "serverless",
     engineVersion: "5.6.10a",
-    dbSubnetGroupName: auroraSubnet.name,
+    dbSubnetGroupName: auroraSubnetGroup.name,
     masterUsername: auroraUsername,
     masterPassword: auroraPassword,
     databaseName: auroraDatabase,
