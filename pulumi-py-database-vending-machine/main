@@ -8,8 +8,8 @@ set -e
 echo Prerequisites aws cli v1.17.5+, pulumi cli v1.8.1+
 
 SCRIPT_LOG_FILE='script.log'
-REPLICATION_TASK_ARN_PATTERN='replication_task_arn:\s\"\K([A-Za-z0-9:\-_]{30,})'
-SOURCE_BUCKET_PATTERN='source_bucket_name:\s\K([A-Za-z0-9:\-_]{6,})'
+REPLICATION_TASK_ARN_PATTERN='replication_task_arn\s*:\s\"\K([A-Za-z0-9:\-_]{30,})'
+SOURCE_BUCKET_PATTERN='source_bucket_name\s*:\s\"\K([A-Za-z0-9\-]{6,})'
 
 echo Creates new stack 'dev'
 pulumi stack init dev
@@ -18,9 +18,9 @@ echo Deploying replication stack
 pulumi up -y &> ${SCRIPT_LOG_FILE}
 
 
-replication_task_arn=$(grep -oP ${REPLICATION_TASK_ARN_PATTERN} ${SCRIPT_LOG_FILE})
-
 source_bucket_name=$(grep -oP ${SOURCE_BUCKET_PATTERN} ${SCRIPT_LOG_FILE})
+
+replication_task_arn="$(grep -oP ${REPLICATION_TASK_ARN_PATTERN} ${SCRIPT_LOG_FILE})"
 
 
 if [[ -z "$replication_task_arn" ]]; then
