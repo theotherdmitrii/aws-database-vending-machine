@@ -1,3 +1,11 @@
-pulumi>=1.8.1
-pulumi-aws>=1.18.0
-pulumi_random>=1.4.0
+Arpeggio==1.9.2
+attrs==19.3.0
+dill==0.3.1.1
+grpcio==1.26.0
+parver==0.2.1
+protobuf==3.11.2
+pulumi==1.8.1
+pulumi-aws==1.18.0
+pulumi-random==1.4.0
+semver==2.9.0
+six==1.14.0
