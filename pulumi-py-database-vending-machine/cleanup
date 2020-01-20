@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Destroys aws stack created to load data into serverless Aurora cluster
+#
+set -e
+
+pulumi destroy --skip-preview

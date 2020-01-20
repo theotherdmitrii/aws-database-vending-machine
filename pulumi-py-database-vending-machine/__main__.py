@@ -16,8 +16,8 @@ dms_source_endpoint = dms.Endpoint("nuage-source-s3-endpoint",
                                            "Tables": [
                                                {
                                                    "TableName": "dummydata",
-                                                   "TablePath": "root/dummydata/",
-                                                   "TableOwner": "root",
+                                                   "TablePath": "nuage/dummydata",
+                                                   "TableOwner": "nuage",
                                                    "TableColumns": [
                                                        {
                                                            "ColumnName": "id",
@@ -115,7 +115,5 @@ dms_replication_task = dms.ReplicationTask("nuage_replication_task",
                                                },
                                            })))
 
-
-
-# Exports
+pulumi.export('source_bucket_name', s3.source_bucket.bucket)
 pulumi.export('replication_task_arn', dms_replication_task.replication_task_arn)
