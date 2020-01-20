@@ -7,7 +7,7 @@ set -e
 
 echo Prerequisites aws cli v1.17.5+, pulumi cli v1.8.1+
 
-SCRIPT_LOG_FILE=./script.log
+SCRIPT_LOG_FILE='script.log'
 REPLICATION_TASK_ARN_PATTERN='replication_task_arn:\s\"\K([A-Za-z0-9:\-_]{30,})'
 SOURCE_BUCKET_PATTERN='source_bucket_name:\s\K([A-Za-z0-9:\-_]{6,})'
 

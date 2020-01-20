@@ -5,3 +5,5 @@
 set -e
 
 pulumi destroy --skip-preview
+
+pulumi stack rm dev
