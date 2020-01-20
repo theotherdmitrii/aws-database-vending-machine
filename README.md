@@ -31,7 +31,7 @@ $ pip3 install -r requirements.txt
 Run `main` script to
 
 ```bash
-$ ./pulumi-py-database-vennding-machine/main
+$ ./main
 ```  
 
 1. create aws stack with serverless Aurora cluster and source s3 bucket 
