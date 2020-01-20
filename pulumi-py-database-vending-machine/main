@@ -5,7 +5,7 @@
 # Runs replication task to loda CSV files into Aurora database
 set -e
 
-echo requires aws cls v1.17.5+
+echo Prerequisites aws cli v1.17.5+, pulumi cli v1.8.1+
 
 SCRIPT_LOG_FILE=./script.log
 REPLICATION_TASK_ARN_PATTERN='replication_task_arn:\s\"\K([A-Za-z0-9:\-_]{30,})'
