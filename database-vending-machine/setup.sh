@@ -42,17 +42,16 @@ fi
 echo started at $(date)
 echo started at $(date) > ${LOG_FILE}
 
+# Creates pulumi stack
+#
+pulumi stack init dev &>> ${LOG_FILE};
+
+
 # Creates KMS copy key
 #
 echo creating snapshot copy key ...
 
-(cd ./create-snapshot-copy-key/;
-
-pulumi stack init dev;
-
-pulumi up -y &>> ${LOG_FILE};
-
-cd -;)
+(cd ./create-snapshot-copy-key/; pulumi up -y &>> ${LOG_FILE}; cd -;)
 
 # Copies snapshot to target account
 #
@@ -86,8 +85,6 @@ echo -e creating Aurora cluster ...
 pulumi config set snapshot_copy_key_arn ${snapshot_copy_key_arn};
 
 pulumi config set snapshot_copy_arn ${snapshot_copy_arn};
-
-pulumi stack init dev;
 
 pulumi up -y &>> ${LOG_FILE};
 

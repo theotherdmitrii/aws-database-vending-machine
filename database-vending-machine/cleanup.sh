@@ -15,8 +15,6 @@ echo -e destroys Aurora cluster
 
 pulumi destroy --skip-preview &>> ${LOG_FILE};
 
-pulumi stack rm dev
-
 cd -;)
 
 
@@ -31,8 +29,8 @@ echo -e destroys snapshot copy key
 
 pulumi destroy --skip-preview &>> ${LOG_FILE};
 
-pulumi stack rm dev
-
 cd -;)
+
+pulumi stack rm dev -y
 
 
