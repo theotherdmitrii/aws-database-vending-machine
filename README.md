@@ -2,7 +2,7 @@
 
 ### Synopsis
 
-The project loads CSV data from s3 bucket into serverless Aurora cluster 
+The project restores shared snapshot into serverless Aurora cluster 
 
 ### Prerequisites
 1. aws cli v1.17.5+
@@ -13,7 +13,7 @@ The project loads CSV data from s3 bucket into serverless Aurora cluster
 Jump into the project directory with
 
 ```bash
-$ cd ./pulumi-py-database-vennding-machine/
+$ cd ./database-vennding-machine/
 ```
 
 Install Python requirements
@@ -28,18 +28,18 @@ $ source venv/bin/activate
 $ pip3 install -r requirements.txt
 ```
 
-Run `main` script to
+Run `setup.sh` script to
 
 ```bash
-$ ./main
+$ ./setup.sh arn:aws:rds:us-west-1:111111111111:cluster-snapshot:snapshot-shared
 ```  
 
-1. create aws stack with serverless Aurora cluster and source s3 bucket 
-1. copy data from specified path (by default `./data/dummy.csv`) to newly created s3 bucket
-1. run replication task to load CSV files into Aurora cluster
+1. create kms key to encrypt a copy of shared cluster snapshot
+1. copy shared cluster snapshot into current account
+1. create serverless Aurora cluster form copied snapshot
 
-Run `cleanup` to cleanup aws resources 
+Run `cleanup.sh` to cleanup aws resources 
 
 ```bash
-$ ./cleanup
+$ ./cleanup.sh
 ```
