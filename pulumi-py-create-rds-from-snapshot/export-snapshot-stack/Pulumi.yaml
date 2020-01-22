@@ -1,3 +1,0 @@
-name: export-snapshot-stack
-runtime: python
-description: A minimal Python Pulumi program
