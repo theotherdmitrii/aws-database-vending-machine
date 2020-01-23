@@ -2,20 +2,7 @@
 
 set -e
 
-# color scheme
-OK='\033[0;34m'
-KO='\033[0;31m'
-NC='\033[0m'
-
-# constants
-#
-BASEDIR=$(pwd)
-
-MASTERUSRENAME="nuage"
-
-MASTERPASSWORD="passw0rd"
-
-LOG_FILE="${BASEDIR}/setup.log"
+source ./var.sh
 
 SNAPSHOT_ARN_PATTERN='arn:aws:rds:[a-z]{2}-[a-z]+-[0-9]{1}:\d{12}:[A-Za-z0-9\-_]*:\K([A-Za-z0-9:\-_]{4,})'
 
@@ -43,9 +30,9 @@ if [ -z "$AWS_DEFAULT_REGION" ]; then
 fi
 
 
-echo --
+echo ---
 echo -e started at ${OK}$(date)${NC}
-echo started at $(date) > ${LOG_FILE}
+echo started at $(date) > ${SETUP_LOG_FILE}
 
 # Creates KMS copy key
 #
@@ -55,16 +42,16 @@ echo creating snapshot copy key ...
 
 # Creates pulumi stack
 #
-pulumi stack init dev &>> ${LOG_FILE};
+pulumi stack init dev &>> ${SETUP_LOG_FILE};
 
-pulumi up -y &>> ${LOG_FILE};
+pulumi up -y &>> ${SETUP_LOG_FILE};
 
 cd - &>/dev/null;)
 
 
 # Copies snapshot to target account
 #
-snapshot_copy_key_arn="$(grep -oP 'snapshot_copy_key_arn\s*:\s\"\K([A-Za-z0-9:\-\/_]{30,})' ${LOG_FILE})"
+snapshot_copy_key_arn="$(grep -oP 'snapshot_copy_key_arn\s*:\s\"\K([A-Za-z0-9:\-\/_]{30,})' ${SETUP_LOG_FILE})"
 
 echo -e copy key arn ${OK}${snapshot_copy_key_arn}${NC}
 
@@ -76,6 +63,8 @@ snapshot_copy_arn=$(aws rds copy-db-cluster-snapshot \
     --output text)
 
 echo -e copying source snapshot ${OK}${1}${NC} to ${OK}${snapshot_copy_arn}${NC} ...
+
+echo "snapshot_copy_arn:${snapshot_copy_arn}" >> ${SETUP_LOG_FILE}
 
 echo 'waiting for snapshot copy to complete ...'
 
@@ -93,7 +82,7 @@ echo -e creating aurora cluster ...
 
 # Creates pulumi stack
 #
-pulumi stack init dev &>> ${LOG_FILE};
+pulumi stack init dev &>> ${SETUP_LOG_FILE};
 
 pulumi config set create-aurora-cluster:snapshot_copy_key_arn ${snapshot_copy_key_arn};
 
@@ -103,10 +92,10 @@ pulumi config set create-aurora-cluster:master_username ${MASTERUSRENAME};
 
 pulumi config set create-aurora-cluster:master_password ${MASTERPASSWORD};
 
-pulumi up -y &>> ${LOG_FILE};
+pulumi up -y &>> ${SETUP_LOG_FILE};
 
 cd - &>/dev/null;)
 
-aurora_cluster_endpoint="$(grep -oP 'aurora_cluster_endpoint\s*:\s\"\K([A-Za-z0-9:\-\/\._]{30,})' ${LOG_FILE})"
+aurora_cluster_endpoint="$(grep -oP 'aurora_cluster_endpoint\s*:\s\"\K([A-Za-z0-9:\-\/\._]{30,})' ${SETUP_LOG_FILE})"
 
 echo -e Aurora cluster endpoint ${OK}${aurora_cluster_endpoint}${NC}
