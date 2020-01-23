@@ -64,7 +64,7 @@ snapshot_copy_arn=$(aws rds copy-db-cluster-snapshot \
 
 echo -e copying source snapshot ${OK}${1}${NC} to ${OK}${snapshot_copy_arn}${NC} ...
 
-echo "snapshot_copy_arn:${snapshot_copy_arn}" >> ${SETUP_LOG_FILE}
+echo "snapshot_copy_arn:\"${snapshot_copy_arn}\"" >> ${SETUP_LOG_FILE}
 
 echo 'waiting for snapshot copy to complete ...'
 

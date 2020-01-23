@@ -34,7 +34,7 @@ Run `setup.sh` script to
 $ ./setup.sh arn:aws:rds:us-west-1:111111111111:cluster-snapshot:snapshot-shared
 ```  
 
-1. create kms key to encrypt a copy of shared cluster snapshot
+1. create kms key to encrypt a copy of a shared cluster snapshot
 1. copy shared cluster snapshot into current account
 1. create serverless Aurora cluster form copied snapshot
 
