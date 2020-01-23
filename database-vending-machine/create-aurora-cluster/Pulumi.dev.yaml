@@ -1,3 +1,3 @@
 config:
   create-aurora-cluster:snapshot_copy_arn: arn:aws:rds:eu-west-1:126563215282:cluster-snapshot:tpch-1gb-shared
-  create-aurora-cluster:snapshot_copy_key_arn: arn:aws:kms:eu-west-1:126563215282:key/0bf0ba67-1c36-4f69-8107-2169109a8586
+  create-aurora-cluster:snapshot_copy_key_arn: arn:aws:kms:eu-west-1:126563215282:key/32d80541-5f57-404c-ade3-afd7c9a0a18b

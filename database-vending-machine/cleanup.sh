@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 # Destroys Aurora cluster stack
-set -e
 
 BASEDIR=$(pwd)
 LOG_FILE="${BASEDIR}/cleanup.log"
@@ -15,7 +14,9 @@ echo -e destroys Aurora cluster
 
 pulumi destroy --skip-preview &>> ${LOG_FILE};
 
-cd -;)
+pulumi stack rm dev -y
+
+cd - &>/dev/null;)
 
 
 # TODO delete kms key
@@ -29,8 +30,9 @@ echo -e destroys snapshot copy key
 
 pulumi destroy --skip-preview &>> ${LOG_FILE};
 
-cd -;)
-
 pulumi stack rm dev -y
+
+cd - &>/dev/null;)
+
 
 

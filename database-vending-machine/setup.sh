@@ -39,27 +39,30 @@ if [ -z "$AWS_DEFAULT_REGION" ]; then
 fi
 
 
-echo started at $(date)
+echo --
+echo -e started at ${OK}$(date)${NC}
 echo started at $(date) > ${LOG_FILE}
-
-# Creates pulumi stack
-#
-pulumi stack init dev &>> ${LOG_FILE};
-
 
 # Creates KMS copy key
 #
 echo creating snapshot copy key ...
 
-(cd ./create-snapshot-copy-key/; pulumi up -y &>> ${LOG_FILE}; cd -;)
+(cd ./create-snapshot-copy-key/;
+
+# Creates pulumi stack
+#
+pulumi stack init dev &>> ${LOG_FILE};
+
+pulumi up -y &>> ${LOG_FILE};
+
+cd - &>/dev/null;)
+
 
 # Copies snapshot to target account
 #
 snapshot_copy_key_arn="$(grep -oP 'snapshot_copy_key_arn\s*:\s\"\K([A-Za-z0-9:\-\/_]{30,})' ${LOG_FILE})"
 
 echo -e copy key arn ${OK}${snapshot_copy_key_arn}${NC}
-
-echo -e copying source snapshot ${OK}${1}${NC} to region ${OK}${AWS_DEFAULT_REGION}${NC} as ${OK}${snapshot_name}${NC} ...
 
 snapshot_copy_arn=$(aws rds copy-db-cluster-snapshot \
     --source-db-cluster-snapshot-identifier ${1} \
@@ -68,28 +71,34 @@ snapshot_copy_arn=$(aws rds copy-db-cluster-snapshot \
     --query 'DBClusterSnapshot.DBClusterSnapshotArn' \
     --output text)
 
-snapshot_copy_arn="arn:aws:rds:eu-west-1:126563215282:cluster-snapshot:tpch-1gb-shared"
+echo -e copying source snapshot ${OK}${1}${NC} to ${OK}${snapshot_copy_arn}${NC} ...
 
+echo 'waiting for snapshot copy to complete ...'
+
+aws rds wait db-cluster-snapshot-available \
+    --db-cluster-snapshot-identifier ${snapshot_copy_arn}
 
 # Creates Aurora cluster
 #
-echo -e snapshot copy arn ${OK}${snapshot_copy_arn}${NC}
-
 (cd ./create-aurora-cluster/;
-echo -e "-- Aurora cluster parameters:"
+echo -e aurora cluster parameters:
 echo -e snapshot_copy_key_arn: ${OK}${snapshot_copy_key_arn}${NC}
 echo -e snapshot_copy_arn: ${OK}${snapshot_copy_arn}${NC}
 
-echo -e creating Aurora cluster ...
+echo -e creating aurora cluster ...
 
-pulumi config set snapshot_copy_key_arn ${snapshot_copy_key_arn};
+# Creates pulumi stack
+#
+pulumi stack init dev &>> ${LOG_FILE};
 
-pulumi config set snapshot_copy_arn ${snapshot_copy_arn};
+pulumi config set create-aurora-cluster:snapshot_copy_key_arn ${snapshot_copy_key_arn};
+
+pulumi config set create-aurora-cluster:snapshot_copy_arn ${snapshot_copy_arn};
 
 pulumi up -y &>> ${LOG_FILE};
 
-cd -;)
+cd - &>/dev/null;)
 
 aurora_cluster_endpoint="$(grep -oP 'aurora_cluster_endpoint\s*:\s\"\K([A-Za-z0-9:\-\/\._]{30,})' ${LOG_FILE})"
 
-echo Aurora cluster endpoint ${aurora_cluster_endpoint}
+echo -e Aurora cluster endpoint ${OK}${aurora_cluster_endpoint}${NC}
