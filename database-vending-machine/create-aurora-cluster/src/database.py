@@ -1,15 +1,7 @@
-import pulumi
 from pulumi_aws import rds
+
+from .config import snapshot_copy_key_arn, snapshot_copy_arn, master_username, master_password
 from .network import aurora_sg, aurora_subnet_0, aurora_subnet_1
-
-aurora_username = "pulumi"
-aurora_password = "password"
-
-config = pulumi.Config()
-
-snapshot_copy_key_arn = config.require('snapshot_copy_key_arn')
-
-snapshot_copy_arn = config.require('snapshot_copy_arn')
 
 aurora_subnet_group = rds.SubnetGroup("nuage_db_subnet",
                                       subnet_ids=[
@@ -31,8 +23,8 @@ aurora_cluster = rds.Cluster("nuage_db",
                              kms_key_id=snapshot_copy_key_arn,
 
                              # Overrides master credential for the cluster
-                             # master_username=aurora_username,
-                             # master_password=aurora_password,
+                             master_username=master_username,
+                             master_password=master_password,
 
                              # Forces to delete cluster
                              skip_final_snapshot=True)

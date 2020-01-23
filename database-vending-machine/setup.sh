@@ -11,6 +11,10 @@ NC='\033[0m'
 #
 BASEDIR=$(pwd)
 
+MASTERUSRENAME="nuage"
+
+MASTERPASSWORD="passw0rd"
+
 LOG_FILE="${BASEDIR}/setup.log"
 
 SNAPSHOT_ARN_PATTERN='arn:aws:rds:[a-z]{2}-[a-z]+-[0-9]{1}:\d{12}:[A-Za-z0-9\-_]*:\K([A-Za-z0-9:\-_]{4,})'
@@ -94,6 +98,10 @@ pulumi stack init dev &>> ${LOG_FILE};
 pulumi config set create-aurora-cluster:snapshot_copy_key_arn ${snapshot_copy_key_arn};
 
 pulumi config set create-aurora-cluster:snapshot_copy_arn ${snapshot_copy_arn};
+
+pulumi config set create-aurora-cluster:master_username ${MASTERUSRENAME};
+
+pulumi config set create-aurora-cluster:master_password ${MASTERPASSWORD};
 
 pulumi up -y &>> ${LOG_FILE};
 

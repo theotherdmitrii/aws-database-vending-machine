@@ -19,9 +19,6 @@ pulumi stack rm dev -y
 cd - &>/dev/null;)
 
 
-# TODO delete kms key
-
-
 # Deletes create-snapshot-copy-key
 #
 echo -e destroys snapshot copy key
