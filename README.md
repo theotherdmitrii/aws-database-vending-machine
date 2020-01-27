@@ -2,19 +2,16 @@
 
 ### Synopsis
 
-The project restores shared snapshot into serverless Aurora cluster 
+The project create serverless Aurora cluster form provided shared cluster snapshot
+
+Please note the program does not create source cluster snapshot.
 
 ### Prerequisites
+1. Shared snapshot ARN 
 1. aws cli v1.17.5+
 1. pulumi cli v1.8.1+ 
 
 ### How to use
-
-Jump into the project directory with
-
-```bash
-$ cd ./database-vennding-machine/
-```
 
 Install Python requirements
 
@@ -28,18 +25,37 @@ $ source venv/bin/activate
 $ pip3 install -r requirements.txt
 ```
 
-Run `setup.sh` script to
+
+Create new `dev` stack for the program 
 
 ```bash
-$ ./setup.sh arn:aws:rds:us-west-1:111111111111:cluster-snapshot:snapshot-shared
+pulumi stack init dev
+```
+
+Configure the program
+
+```bash
+pulumi config set database-vending-machine:db_cluster_snapshot_arn arn:aws:rds:us-west-1:111111111111:cluster-snapshot:snapshot-shared;
+
+pulumi config set database-vending-machine:db_cluster_snapshot_copy_name snapshot-shared-copy;
+```
+
+Run the program
+
+```bash
+pulumi up -y
+```
+
+OR
+
+Run `deploy.sh` script to create a database copy
+
+```bash
+$ ./deploy.sh arn:aws:rds:us-west-1:111111111111:cluster-snapshot:snapshot-shared
 ```  
 
-1. create kms key to encrypt a copy of a shared cluster snapshot
-1. copy shared cluster snapshot into current account
-1. create serverless Aurora cluster form copied snapshot
-
-Run `cleanup.sh` to cleanup aws resources 
+Run `destroy.sh` to remove aws resources 
 
 ```bash
-$ ./cleanup.sh
+$ ./destroy.sh
 ```

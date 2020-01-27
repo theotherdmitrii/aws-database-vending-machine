@@ -1,3 +1,0 @@
-name: create-snapshot-copy-key
-runtime: python
-description: Creates KMS key to encrypt snapshot copy

@@ -1,0 +1,3 @@
+name: database-vending-machine
+runtime: python
+description: Creates serverless Aurora snapshot form specified cluster snapshot
